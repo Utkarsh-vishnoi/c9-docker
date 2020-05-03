@@ -1,0 +1,17 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Proxy server for c9 and custom ports",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Utkarsh Vishnoi",
+  "license": "ISC",
+  "dependencies": {
+     "express": "^4.17.1",
+     "http-proxy": "^1.18.0",
+     "morgan": "^1.10.0"
+  }
+}
