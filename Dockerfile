@@ -6,12 +6,22 @@ MAINTAINER Utkarsh Vishnoi <utkarshvishnoi25@gmail.com>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME /root
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-
 # Ubuntu Package Upgrade
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install curl ca-certificates wget gnupg git bzip2 build-essential zip unzip nodejs php ssh npm locales -y --no-install-recommends
+RUN apt update
+RUN apt upgrade -y
+
+# Basic Packages
+RUN apt install curl wget ca-certificates gnupg bzip2 build-essential zip unzip ssh locales -y
+
+# Node JS Repository
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+
+# Yarn Repository
+RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+
+RUN apt install git php nodejs yarn -y --no-install-recommends
 
 # Standard cleanup
 RUN apt-get autoremove -y && update-ca-certificates && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -27,24 +37,23 @@ ENV PATH="${PATH}:/usr/local/go/bin:${GOPATH}/bin"
 RUN mkdir ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts && ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
 
 # Cloud9 Installation
-RUN git clone https://github.com/utkarsh-vishnoi/core.git /root/c9
-WORKDIR /root/c9
+RUN git clone https://github.com/utkarsh-vishnoi/core.git /root/proxy-server/c9/
+WORKDIR /root/proxy-server/c9
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && dpkg-reconfigure --frontend=noninteractive locales \
     && update-locale LANG=en_US.UTF-8
-ENV LANG en_US.UTF-8 
+ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 RUN scripts/install-sdk.sh
 
 # Installing Proxy Server
-ADD server.js app.js package.json /root/proxy-server/
+ADD package.json /root/proxy-server/
 WORKDIR /root/proxy-server
 RUN npm install
 
-# Installing Foreman & Adding Procfile
-RUN npm install -g foreman
-Add Procfile /root
+ADD server.js app.js /root/proxy-server/
+ADD static /root/proxy-server/static
 
-WORKDIR /root
-CMD nf start
+WORKDIR /root/proxy-server
+CMD npm start
 

@@ -7,3 +7,5 @@ web:
     - ROOT_PASS=supersecret
     - ROOT_USER=root
     - WORKSPACE_PATH=/root/ws
+    - MONGODB_URI=mongodb+srv://admin:hSfR8R7pA4j1Bzgn@supreme-c9-bbase-zpn5h.mongodb.net/test?retryWrites=true&w=majority
+    - BACKUP_DELAY=60000
