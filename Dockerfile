@@ -54,6 +54,6 @@ RUN npm install
 ADD server.js app.js /root/proxy-server/
 ADD static /root/proxy-server/static
 
-WORKDIR /root/proxy-server
-CMD npm start
+WORKDIR /root
+CMD cd /root/proxy-server && npm start
 
