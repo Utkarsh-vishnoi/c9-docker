@@ -37,7 +37,7 @@ ENV PATH="${PATH}:/usr/local/go/bin:${GOPATH}/bin"
 RUN mkdir ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts && ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
 
 # Cloud9 Installation
-RUN git clone https://github.com/utkarsh-vishnoi/core.git /root/proxy-server/c9/
+RUN git clone https://github.com/utkarsh-vishnoi/c9-edge.git /root/proxy-server/c9/
 WORKDIR /root/proxy-server/c9
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && dpkg-reconfigure --frontend=noninteractive locales \
@@ -45,6 +45,7 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 RUN scripts/install-sdk.sh
+RUN cp -r /root/proxy-server/c9/.c10 /root
 
 # Installing Proxy Server
 ADD package.json /root/proxy-server/
