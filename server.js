@@ -24,7 +24,7 @@ server.listen(port, () => {
     // Initiate restore process
     const restoreProc = mm.restore({
         dir: process.env.WORKSPACE_PATH,
-        db: process.env.MONGODB_URI
+        db: process.env.APP_MONGO_URI
     }, err => {
         throw new Error(err)
     })
