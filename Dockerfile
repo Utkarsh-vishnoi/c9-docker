@@ -39,6 +39,7 @@ RUN mkdir ~/.ssh && ssh-keyscan -H github.com >> ~/.ssh/known_hosts && ssh-keysc
 # Cloud9 Installation
 RUN git clone https://github.com/utkarsh-vishnoi/c9-edge.git /root/proxy-server/c9/
 WORKDIR /root/proxy-server/c9
+RUN git checkout edge
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && dpkg-reconfigure --frontend=noninteractive locales \
     && update-locale LANG=en_US.UTF-8
