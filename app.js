@@ -1,6 +1,9 @@
+const tar = require('tar')
 const path = require('path')
+const axios = require('axios')
 const fs = require('fs-extra')
 const morgan = require('morgan')
+const form = require('form-data')
 const express = require('express')
 const proxy = require('http-proxy').createProxyServer();
 
@@ -11,11 +14,26 @@ let idleTimer;
 
 let backup = () => {
     // Initiate Backup Process
-    mm.backup({
-        dir: process.env.WORKSPACE_PATH,
-        db: process.env.APP_MONGO_URI
-    }, (err) => {
-        throw new Error(err)
+    tar.c({
+        gzip: true,
+        file: 'c9-workspace.tar.gz',
+        cwd: process.env.WORKSPACE_PATH
+    },[process.env.WORKSPACE_PATH]).then(async _ => {
+        console.log('Workspace Compressed! Initializing Upload!');
+        let formData = new form()
+        formData.append('upload', fs.createReadStream('c9-workspace.tar.gz'))
+        axios.post(process.env.APP_PERSIST_URL, formData, {
+            auth: {
+                username: process.env.APP_PERSIST_USERNAME,
+                password: process.env.APP_PERSIST_PASSWORD
+            },
+            headers: {
+                ...formData.getHeaders()
+            }
+        }).then(response => {
+            console.log('Axios Upload Successfull...' )
+        })
+        .catch(error => console.log('Axios Upload Error: ' + error))
     })
 }
 
